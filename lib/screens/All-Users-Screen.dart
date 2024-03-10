@@ -83,22 +83,48 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
 
                   return Card(
                     elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: AppConstant.appSecondaryColor,
-                        backgroundImage: CachedNetworkImageProvider(
-                          userModel.userImg,
-                          errorListener: (err){
-                            print("Error Loading Image");
-                            Icon(Icons.error);
-                          },
+                      leading: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppConstant.appSecondaryColor,
+                            width: 3,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppConstant.appSecondaryColor.withOpacity(0.5),
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: CachedNetworkImageProvider(
+                            userModel.userImg,
+                            errorListener: (err) {
+                              print("Error Loading Image");
+                              Icon(Icons.error);
+                            },
+                          ),
                         ),
                       ),
-                      title: Text(userModel.username),
+                      title: Text(
+                        userModel.username,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       subtitle: Text(userModel.email),
                       trailing: Icon(Icons.edit),
                     ),
                   );
+
+
                 },
               );
             }

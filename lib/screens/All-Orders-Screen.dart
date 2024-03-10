@@ -63,24 +63,49 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
 
                   return Card(
                     elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     child: ListTile(
                       onTap: () => Get.to(
-                              ()=> SpecificCustomerOrderScreen(
-                                docId: snapshot.data!.docs[index]['uId'],
-                                customerName: snapshot.data!.docs[index]['customerName']
-                              )),
-
-                      leading: CircleAvatar(
-                        backgroundColor: AppConstant.appSecondaryColor,
-                        child: Text(data['customerName'][0],
-                          style: const TextStyle(
-                            color: AppConstant.appTextColor),),
-                    ),
-                        title: Text(data['customerName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                            () => SpecificCustomerOrderScreen(
+                          docId: snapshot.data!.docs[index]['uId'],
+                          customerName: snapshot.data!.docs[index]['customerName'],
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      leading: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppConstant.appSecondaryColor,
+                            width: 2,
+                          ),
+                        ),
+                        child: Center(
+                          child: CircleAvatar(
+                            backgroundColor: AppConstant.appSecondaryColor,
+                            child: Text(
+                              data['customerName'][0],
+                              style: TextStyle(
+                                color: AppConstant.appTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        data['customerName'],
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       subtitle: Text(data['customerPhone']),
                       trailing: Icon(Icons.edit),
                     ),
                   );
+
                 },
               );
             }

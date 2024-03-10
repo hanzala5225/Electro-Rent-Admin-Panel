@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../utils/app_constant.dart';
+import 'Check-Single-Order-Screen.dart';
 
 class SpecificCustomerOrderScreen extends StatefulWidget {
   String docId;
@@ -94,29 +95,68 @@ class _SpecificCustomerOrderScreenState extends State<SpecificCustomerOrderScree
 
                   return Card(
                     elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     child: ListTile(
                       onTap: () => Get.to(
-                              ()=> SpecificCustomerOrderScreen(
-                              docId: snapshot.data!.docs[index]['uId'],
-                              customerName: snapshot.data!.docs[index]['customerName']
-                          )),
-
-                      leading: CircleAvatar(
-                        backgroundColor: AppConstant.appSecondaryColor,
-                        backgroundImage: CachedNetworkImageProvider(
-                          orderModel.productImages[0],
-                          errorListener: (err){
-                            print("Error Loading Image");
-                            Icon(Icons.error);
-                          },
+                            () => CheckSingleOrderScreen(
+                          docId: snapshot.data!.docs[index].id,
+                          orderModel: orderModel,
                         ),
                       ),
-                      title: Text(orderModel.customerName,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(orderModel.productName),
-                      //trailing: Icon(Icons.edit),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      leading: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppConstant.appSecondaryColor,
+                            width: 2,
+                          ),
+                        ),
+                        child: Center(
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: CachedNetworkImageProvider(
+                              orderModel.productImages[0],
+                              errorListener: (err) {
+                                print("Error Loading Image");
+                                Icon(Icons.error);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            orderModel.customerName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            orderModel.productName,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                     ),
                   );
+
                 },
               );
             }
