@@ -1,24 +1,24 @@
 class OrderModel {
-  final String productId;
   final String categoryId;
-  final String productName;
   final String categoryName;
-  final String salePrice;
+  final dynamic createdAt;
+  final String customerAddress;
+  final String customerDeviceToken;
+  final String customerId;
+  final String customerName;
+  final String customerPhone;
   final String rentPrice;
   final String deliveryTime;
   final bool isSale;
   final List productImages;
   final String productDescription;
-  final dynamic createdAt;
-  final dynamic updatedAt;
+  final String productId;
+  final String productName;
   final int productQuantity;
   final double productTotalPrice;
-  final String customerId;
+  final String salePrice;
+  final dynamic updatedAt;
   final bool status;
-  final String customerName;
-  final String customerPhone;
-  final String customerAddress;
-  final String customerDeviceToken;
 
   OrderModel({
     required this.productId,

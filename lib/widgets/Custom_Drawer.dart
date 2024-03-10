@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../screens/All-Orders-Screen.dart';
 import '../screens/All-Users-Screen.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -146,7 +147,7 @@ class DrawerWidget extends StatefulWidget {
                           horizontal: 20.0),
                       child: ListTile(
                         onTap: (){
-                          //Get.offAll(() => MainScreen());
+                          Get.to(() => AllOrdersScreen());
                         },
                         title: Text(
                           "Orders",
