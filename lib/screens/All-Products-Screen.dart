@@ -1,3 +1,4 @@
+import 'package:admin_panel/models/Product-Model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,8 +7,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import '../controllers/Get-Products-Length-Controller.dart';
-import '../controllers/Get-Users-Length-Controller.dart';
-import '../models/user_models.dart';
 import '../utils/app_constant.dart';
 
 class AllProductsScreen extends StatefulWidget {
@@ -34,14 +33,14 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
       body: FutureBuilder(
           future: FirebaseFirestore.instance
-              .collection("users")
-              .orderBy("createdOn", descending: true)
+              .collection("products")
+              .orderBy("createdAt", descending: true)
               .get(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if(snapshot.hasError){
               return Container(
                 child: Center(
-                  child: Text("Error Occured While Fetching Category..!!"),
+                  child: Text("Error Occured While Fetching Products..!!"),
                 ),
               );
             }
@@ -55,7 +54,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             if(snapshot.data!.docs.isEmpty){
               return Container(
                 child: Center(
-                  child: Text("No Users Found..!!"),
+                  child: Text("No Products Found..!!"),
                 ),
               );
             }
@@ -67,19 +66,19 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                 itemBuilder: (context, index){
                   final data = snapshot.data!.docs[index];
 
-                  UserModel userModel = UserModel(
-                      uId: data['uId'],
-                      username: data['username'],
-                      email: data['email'],
-                      phone: data['phone'],
-                      userImg: data['userImg'],
-                      userDeviceToken: data['userDeviceToken'],
-                      country: data['country'],
-                      userAddress: data['userAddress'],
-                      street: data['street'],
-                      isAdmin: data['isAdmin'],
-                      isActive: data['isActive'],
-                      createdOn: data['createdOn']
+                  ProductModel productModel = ProductModel(
+                      productId: data['productId'],
+                      categoryId: data['categoryId'],
+                      productName: data['productName'],
+                      categoryName: data['categoryName'],
+                      salePrice: data['salePrice'],
+                      rentPrice: data['rentPrice'],
+                      deliveryTime: data['deliveryTime'],
+                      isSale: data['isSale'],
+                      productImages: data['productImages'],
+                      productDescription: data['productDescription'],
+                      createdAt: data['createdAt'],
+                      updatedAt: data['updatedAt'],
                   );
 
                   return Card(
@@ -108,7 +107,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           backgroundImage: CachedNetworkImageProvider(
-                            userModel.userImg,
+                            productModel.productImages[0],
                             errorListener: (err) {
                               print("Error Loading Image");
                               Icon(Icons.error);
@@ -117,10 +116,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         ),
                       ),
                       title: Text(
-                        userModel.username,
+                        productModel.productName,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(userModel.email),
+                      subtitle: Text(productModel.categoryName),
                       trailing: Icon(Icons.edit),
                     ),
                   );

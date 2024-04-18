@@ -1,3 +1,4 @@
+import 'package:admin_panel/screens/All-Products-Screen.dart';
 import 'package:admin_panel/screens/main_screen.dart';
 import 'package:admin_panel/utils/app_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -165,7 +166,8 @@ class DrawerWidget extends StatefulWidget {
                           horizontal: 20.0),
                       child: ListTile(
                         onTap: (){
-                          // Get.offAll(() => MainScreen());
+                          Get.back();
+                          Get.to(() => AllProductsScreen());
                         },
                         title: Text(
                           "Products",
