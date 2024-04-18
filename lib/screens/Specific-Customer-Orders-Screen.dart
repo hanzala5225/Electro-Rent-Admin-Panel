@@ -69,6 +69,8 @@ class _SpecificCustomerOrderScreenState extends State<SpecificCustomerOrderScree
                 itemBuilder: (context, index){
                   final data = snapshot.data!.docs[index];
 
+                  String orderDocId = data.id;
+
                   OrderModel orderModel = OrderModel(
                       productId: data['productId'],
                       categoryId: data['categoryId'],
@@ -149,19 +151,161 @@ class _SpecificCustomerOrderScreenState extends State<SpecificCustomerOrderScree
                           ),
                         ],
                       ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 20,
-                        color: Colors.grey,
+                      trailing: InkWell(
+                        onTap: (){
+                          showBottomSheet(
+                            userDocId: widget.docId,
+                            orderModel: orderModel,
+                            orderDocId: orderDocId,
+                          );
+                        },
+                        child: Icon(
+                          Icons.more_vert,
+                          size: 26,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   );
-
                 },
               );
             }
             return Container();
           }
+      ),
+    );
+  }
+
+  void showBottomSheet({
+    required String userDocId,
+    required OrderModel orderModel,
+    required String orderDocId,
+  }) {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "Order Options",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  // Show loading indicator
+                  Get.dialog(
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    barrierDismissible: false, // Prevent dismissing dialog on tap outside
+                  );
+
+                  // Simulate delay for demonstration
+                  await Future.delayed(Duration(seconds: 2));
+
+                  // Hide loading indicator
+                  Get.back();
+
+                  // Update status
+                  await FirebaseFirestore.instance
+                      .collection('orders')
+                      .doc(userDocId)
+                      .collection('confirmOrders')
+                      .doc(orderDocId)
+                      .update({'status': false});
+
+                  // Show success message
+                  Get.snackbar(
+                    'Success!',
+                    'Order has been marked as Pending',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.red, // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    "Mark as Pending",
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  // Show loading indicator
+                  Get.dialog(
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    barrierDismissible: false, // Prevent dismissing dialog on tap outside
+                  );
+
+                  // Simulate delay for demonstration
+                  await Future.delayed(Duration(seconds: 2));
+
+                  // Hide loading indicator
+                  Get.back();
+
+                  // Update status
+                  await FirebaseFirestore.instance
+                      .collection('orders')
+                      .doc(userDocId)
+                      .collection('confirmOrders')
+                      .doc(orderDocId)
+                      .update({'status': true});
+
+                  // Show success message
+                  Get.snackbar(
+                    'Success!',
+                    'Order has been marked as Delivered',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.green, // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    "Mark as Delivered",
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
