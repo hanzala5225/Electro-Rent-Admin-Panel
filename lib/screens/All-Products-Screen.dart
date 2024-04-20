@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import '../controllers/Get-Products-Length-Controller.dart';
 import '../utils/app_constant.dart';
+import 'Add-Products-Screen.dart';
 
 class AllProductsScreen extends StatefulWidget {
   const AllProductsScreen({super.key});
@@ -30,7 +32,17 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             return Text(
               'Products (${_getProductsLengthController.productsCollectionLength.toString()})',
               style: TextStyle(color: AppConstant.appTextColor),);
-          })
+
+          }),
+          actions: [
+            GestureDetector(
+              onTap: ()=> Get.to(() => AddProductsScreen()),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Icon(Icons.add_rounded),
+              ),
+            )
+        ],
       ),
       body: FutureBuilder(
           future: FirebaseFirestore.instance
