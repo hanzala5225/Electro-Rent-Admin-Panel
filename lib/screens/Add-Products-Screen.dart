@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Get-Products-Images-Controller.dart';
 import '../utils/app_constant.dart';
 
@@ -13,6 +14,9 @@ class AddProductsScreen extends StatelessWidget {
 
   AddProductImagesController addProductImagesController =
   Get.put(AddProductImagesController());
+
+  CategoryDropDownController categoryDropDownController =
+  Get.put(CategoryDropDownController());
 
   @override
   Widget build(BuildContext context) {
