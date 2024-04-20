@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Get-Products-Images-Controller.dart';
 import '../utils/app_constant.dart';
+import '../widgets/Dropdown-Categories-Widget.dart';
 
 class AddProductsScreen extends StatelessWidget {
   AddProductsScreen({super.key});
@@ -102,6 +103,9 @@ class AddProductsScreen extends StatelessWidget {
                       : SizedBox.shrink();
                 },
               ),
+
+              //show categories drop down widget
+              DropDownCategoriesWidget(),
             ],
           ),
         ),

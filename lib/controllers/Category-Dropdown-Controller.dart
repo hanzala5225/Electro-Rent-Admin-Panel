@@ -74,7 +74,7 @@ class CategoryDropDownController extends GetxController{
     }
   }
   // set selected category
-  void setCategoryName(String? categoryName){
+  void setSelectedCategoryName(String? categoryName){
     selectedCategoryName = categoryName?.obs;
     update();
   }
