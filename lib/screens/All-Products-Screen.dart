@@ -1,4 +1,5 @@
 import 'package:admin_panel/models/Product-Model.dart';
+import 'package:admin_panel/screens/Single-Product-Detail-Screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +28,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
           backgroundColor: AppConstant.appMainColor,
           title: Obx(() {
             return Text(
-              'Users (${_getProductsLengthController.productsCollectionLength.toString()})',
+              'Products (${_getProductsLengthController.productsCollectionLength.toString()})',
               style: TextStyle(color: AppConstant.appTextColor),);
           })
       ),
@@ -87,6 +88,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: ListTile(
+                      onTap: () => Get.to(
+                              () => SingleProductDetailScreen(productModel: productModel)),
                       leading: Container(
                         width: 60,
                         height: 60,
@@ -104,6 +107,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                             ),
                           ],
                         ),
+
+
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           backgroundImage: CachedNetworkImageProvider(
