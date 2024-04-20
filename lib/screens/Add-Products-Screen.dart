@@ -7,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Get-Products-Images-Controller.dart';
+import '../controllers/Is-Sale-Controller.dart';
 import '../utils/app_constant.dart';
 import '../widgets/Dropdown-Categories-Widget.dart';
 
@@ -18,6 +19,21 @@ class AddProductsScreen extends StatelessWidget {
 
   CategoryDropDownController categoryDropDownController =
   Get.put(CategoryDropDownController());
+
+  IsSaleController isSaleController =
+  Get.put(IsSaleController());
+
+  TextEditingController productNameController =
+  Get.put(TextEditingController());
+
+  TextEditingController salePriceController =
+  Get.put(TextEditingController());
+
+  TextEditingController rentPriceController =
+  Get.put(TextEditingController());
+
+  TextEditingController productDescriptionController =
+  Get.put(TextEditingController());
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +122,135 @@ class AddProductsScreen extends StatelessWidget {
 
               //show categories drop down widget
               DropDownCategoriesWidget(),
+
+              //IS SALE METHOD CALLED HERE
+              GetBuilder<IsSaleController>(
+                init: IsSaleController(),
+                  builder: (isSaleController){
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card(
+                      elevation: 10,
+                      child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(" Product On Sale ",
+                            style: TextStyle(fontSize: 17),),
+                            Switch(
+                                value: isSaleController.isSale.value,
+                                activeColor: AppConstant.appMainColor,
+                                onChanged: (value){
+                                  isSaleController.toggleIsSale(value);
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              ),
+
+              //FORM FIELD
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 65,
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  cursorColor: AppConstant.appMainColor,
+                  textInputAction: TextInputAction.next,
+                  controller: productNameController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                    hintText: "Product Name: ",
+                    hintStyle: TextStyle(fontSize: 12.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Obx(() {
+                return isSaleController.isSale.value? Container(
+                  height: 65,
+                  margin: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextFormField(
+                    cursorColor: AppConstant.appMainColor,
+                    textInputAction: TextInputAction.next,
+                    controller: salePriceController,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                      hintText: "Sale Price: ",
+                      hintStyle: TextStyle(fontSize: 12.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ): SizedBox.shrink();
+               },
+              ),
+
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 65,
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  cursorColor: AppConstant.appMainColor,
+                  textInputAction: TextInputAction.next,
+                  controller: rentPriceController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                    hintText: "Rent Price: ",
+                    hintStyle: TextStyle(fontSize: 12.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 65,
+                margin: EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextFormField(
+                  cursorColor: AppConstant.appMainColor,
+                  textInputAction: TextInputAction.next,
+                  controller: productDescriptionController,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                    hintText: "Product Description: ",
+                    hintStyle: TextStyle(fontSize: 12.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              
+              ElevatedButton(
+                onPressed: (){},
+                child: Text("Upload Product"),
+              ),
             ],
           ),
         ),
