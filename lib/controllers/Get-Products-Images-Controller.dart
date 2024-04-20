@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../utils/app_constant.dart';
+
 class AddProductImagesController extends GetxController{
   final ImagePicker _picker = ImagePicker();
   RxList<XFile> SelectedImages = <XFile>[].obs;
@@ -29,8 +31,16 @@ class AddProductImagesController extends GetxController{
         title: "Choose Image",
         middleText: "Do You Want To Pick Image From Camera Or Gallery??",
         actions: [
-          ElevatedButton(onPressed: (){}, child: Text("Camera")),
-          ElevatedButton(onPressed: (){}, child: Text("Gallery"))
+          ElevatedButton(
+              onPressed: (){
+                SelectImages("Camera");
+              }, child: Text("Camera"),
+          ),
+          ElevatedButton(
+              onPressed: (){
+                SelectImages("Gallery");
+              }, child: Text("Gallery"),
+          ),
         ]
       );
     }
@@ -43,4 +53,42 @@ class AddProductImagesController extends GetxController{
       openAppSettings();
     }
   }
+
+  Future<void> SelectImages(String type) async {
+    List<XFile> imgs = [];
+    if(type == "Gallery"){
+      try{
+        imgs = await _picker.pickMultiImage(imageQuality: 85);
+        update();
+      }catch(e){
+        Get.snackbar(
+            "Error",
+            "$e",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: AppConstant.appSecondaryColor,
+            colorText: AppConstant.appTextColor
+        );
+      }
+    }else{
+      final img =
+           await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+
+      if(img != null){
+        imgs.add(img);
+        update();
+      }
+    }
+
+    if(imgs.isNotEmpty){
+      SelectedImages.addAll(imgs);
+      update();
+      print(SelectedImages.length);
+    }
+  }
+
+  void removeImages(int index){
+    SelectedImages.removeAt(index);
+    update();
+  }
 }
+
