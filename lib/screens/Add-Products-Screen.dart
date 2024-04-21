@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:admin_panel/models/Product-Model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -48,8 +51,8 @@ class AddProductsScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
-          height: Get.height,
           child: Column(
             children: [
               Padding(
@@ -250,8 +253,49 @@ class AddProductsScreen extends StatelessWidget {
               
               ElevatedButton(
                 onPressed: () async {
-                  String productId = await GenerateIds().generateProductId();
-                  print(productId);
+
+                  //print(productId);
+
+                  try{
+                    EasyLoading.show();
+                    await addProductImagesController
+                        .uploadFunction(addProductImagesController.SelectedImages);
+
+                    print(addProductImagesController.arrImagesUrl);
+                    String productId = await GenerateIds().generateProductId();
+
+                    ProductModel productModel = ProductModel(
+                        productId: productId,
+                        categoryId: categoryDropDownController.selectedCategoryId.toString(),
+                        productName: productNameController.text.trim(),
+                        categoryName: categoryDropDownController.selectedCategoryName.toString(),
+                        salePrice: salePriceController.text!= "" ? salePriceController.text.trim() : "",
+                        rentPrice: rentPriceController.text.trim(),
+                        deliveryTime: "",
+                        isSale: isSaleController.isSale.value,
+                        productImages: addProductImagesController.arrImagesUrl,
+                        productDescription: productDescriptionController.text.trim(),
+                        createdAt: DateTime.now(),
+                        updatedAt: DateTime.now(),
+                    );
+
+                    await FirebaseFirestore.instance
+                        .collection("products")
+                        .doc(productId)
+                        .set(productModel.toMap(),
+                    );
+
+                    EasyLoading.dismiss();
+                  }
+                  catch(e){
+                    Get.snackbar(
+                        "Error",
+                        "$e",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: AppConstant.appSecondaryColor,
+                        colorText: AppConstant.appTextColor
+                    );
+                  }
                 },
                 child: Text("Upload Product"),
               ),
