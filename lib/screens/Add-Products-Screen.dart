@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Get-Products-Images-Controller.dart';
 import '../controllers/Is-Sale-Controller.dart';
+import '../services/Generate-Ids-Services.dart';
 import '../utils/app_constant.dart';
 import '../widgets/Dropdown-Categories-Widget.dart';
 
@@ -248,7 +249,10 @@ class AddProductsScreen extends StatelessWidget {
               ),
               
               ElevatedButton(
-                onPressed: (){},
+                onPressed: () async {
+                  String productId = await GenerateIds().generateProductId();
+                  print(productId);
+                },
                 child: Text("Upload Product"),
               ),
             ],
