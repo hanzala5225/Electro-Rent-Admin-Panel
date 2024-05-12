@@ -6,6 +6,10 @@ class IsSaleController extends GetxController{
   void toggleIsSale(bool value){
     isSale.value = value;
     update();
+  }
 
+  void setIsSaleOldProduct(bool value){
+    isSale.value = value;
+    update();
   }
 }

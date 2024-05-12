@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../controllers/Category-Dropdown-Controller.dart';
+import '../controllers/Is-Sale-Controller.dart';
 import '../utils/app_constant.dart';
 
 class EditProductScreen extends StatelessWidget {
@@ -140,6 +141,36 @@ class EditProductScreen extends StatelessWidget {
               );
             },
           ),
+
+                  GetBuilder<IsSaleController>(
+                      init: IsSaleController(),
+                      builder: (isSaleController) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Card(
+                            elevation: 10,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    " Product On Sale ",
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                  Switch(
+                                    value: isSaleController.isSale.value,
+                                    activeColor: AppConstant.appMainColor,
+                                    onChanged: (value) {
+                                      isSaleController.toggleIsSale(value);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
 
                 ],
               ),

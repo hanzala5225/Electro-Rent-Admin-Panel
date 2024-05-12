@@ -11,6 +11,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Get-Products-Length-Controller.dart';
+import '../controllers/Is-Sale-Controller.dart';
 import '../utils/app_constant.dart';
 import 'Add-Products-Screen.dart';
 
@@ -143,7 +144,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       trailing: GestureDetector(
                           onTap: () {
                             final editProductCategory = Get.put(CategoryDropDownController());
+                            final isSaleController = Get.put(IsSaleController());
+
                             editProductCategory.setOldValues(productModel.categoryId);
+                            isSaleController.setIsSaleOldProduct(productModel.isSale);
+
                              Get.to(() => EditProductScreen(productModel: productModel));
                            },
                              child: Icon(Icons.edit_outlined),
