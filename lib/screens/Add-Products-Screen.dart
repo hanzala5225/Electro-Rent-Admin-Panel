@@ -249,8 +249,9 @@ class AddProductsScreen extends StatelessWidget {
                     EasyLoading.show();
                     await addProductImagesController
                         .uploadFunction(addProductImagesController.SelectedImages);
-
                     print(addProductImagesController.arrImagesUrl);
+                    print('Category Name: ${categoryDropDownController.selectedCategoryName}');
+
                     String productId = await GenerateIds().generateProductId();
 
                     ProductModel productModel = ProductModel(

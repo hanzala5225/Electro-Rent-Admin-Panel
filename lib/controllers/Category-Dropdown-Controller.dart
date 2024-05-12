@@ -30,6 +30,7 @@ class CategoryDropDownController extends GetxController{
           'categoryImg': document['categoryImg'],
         });
       });
+      setCategoriesList(categoriesList);
 
       categories.value = categoriesList;
       update();
@@ -48,6 +49,13 @@ class CategoryDropDownController extends GetxController{
   // set selected category
     void setSelectedCategory(String? categoryId){
       selectedCategoryId = categoryId?.obs;
+      categoriesList.forEach((element) {
+        if(element['categoryId'] == categoryId){
+          setSelectedCategoryName(element['categoryName']);
+        }
+      });
+      print('Value: ${selectedCategoryId}');
+      print('Value: ${selectedCategoryName}');
       update();
     }
 
@@ -76,6 +84,12 @@ class CategoryDropDownController extends GetxController{
   // set selected category
   void setSelectedCategoryName(String? categoryName){
     selectedCategoryName = categoryName?.obs;
+    update();
+  }
+
+  List<Map<String,dynamic>> categoriesList= [];
+  void setCategoriesList(List<Map<String,dynamic>>  values){
+    categoriesList = values;
     update();
   }
 }

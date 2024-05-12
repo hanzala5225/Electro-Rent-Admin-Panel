@@ -124,11 +124,17 @@ class SingleProductDetailScreen extends StatelessWidget {
                       Text("Product Images"),
                       Container(
                         width: Get.width / 2,
-                        child: Text(
-                          productModel.productImages[2],
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildImageCircle(productModel.productImages[0]),
+                          ],
                         ),
+                        // Text(
+                        //   productModel.productImages[0],
+                        //   overflow: TextOverflow.ellipsis,
+                        //   maxLines: 3,
+                        // ),
                       ),
                     ],
                   ),
@@ -138,6 +144,12 @@ class SingleProductDetailScreen extends StatelessWidget {
           )
         ],
       ),),
+    );
+  }
+  Widget _buildImageCircle(String imageUrl) {
+    return CircleAvatar(
+      radius: 40.0,
+      backgroundImage: NetworkImage(imageUrl),
     );
   }
 }

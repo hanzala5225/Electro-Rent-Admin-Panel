@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
 import '../models/Product-Model.dart';
+import '../utils/app_constant.dart';
 
 class EditProductController extends GetxController{
   ProductModel productModel;
@@ -30,5 +32,22 @@ class EditProductController extends GetxController{
         }
       }
     });
+  }
+
+  Future DeleteImagesFromStorage(String imageUrl) async{
+    final FirebaseStorage storage = FirebaseStorage.instance;
+    try{
+      Reference reference = storage.refFromURL(imageUrl);
+      await reference.delete();
+    } catch(e){
+
+      Get.snackbar(
+          "Error",
+          "$e",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppConstant.appSecondaryColor,
+          colorText: AppConstant.appTextColor
+      );
+    }
   }
 }
