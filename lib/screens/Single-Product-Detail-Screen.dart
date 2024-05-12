@@ -146,6 +146,7 @@ class SingleProductDetailScreen extends StatelessWidget {
       ),),
     );
   }
+
   Widget _buildImageCircle(String imageUrl) {
     return CircleAvatar(
       radius: 40.0,

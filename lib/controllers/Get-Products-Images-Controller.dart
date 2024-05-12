@@ -31,15 +31,20 @@ class AddProductImagesController extends GetxController{
           middleText: "Do You Want To Pick Image From Camera Or Gallery??",
           actions: [
             ElevatedButton(
-              onPressed: (){
-                SelectImages("Camera");
-              }, child: Text("Camera"),
+              onPressed: () async {
+                await SelectImages("Camera");
+                Get.back(); // Close dialog after image selection
+              },
+              child: Text("Camera"),
             ),
             ElevatedButton(
-              onPressed: (){
-                SelectImages("Gallery");
-              }, child: Text("Gallery"),
+              onPressed: () async {
+                await SelectImages("Gallery");
+                Get.back(); // Close dialog after image selection
+              },
+              child: Text("Gallery"),
             ),
+
           ]
       );
     }
@@ -82,8 +87,11 @@ class AddProductImagesController extends GetxController{
       SelectedImages.addAll(imgs);
       update();
       print(SelectedImages.length);
+      showUploadSuccessDialog();
     }
   }
+
+
 
   void removeImages(int index){
     SelectedImages.removeAt(index);
@@ -99,6 +107,23 @@ class AddProductImagesController extends GetxController{
       arrImagesUrl.add(imageUrl.toString());
     }
     update();
+  }
+
+  void showUploadSuccessDialog() {
+    Get.dialog(
+      AlertDialog(
+        title: Text("Upload Successful"),
+        content: Text("Images uploaded successfully."),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.back(); // Close the success dialog
+            },
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 
   //

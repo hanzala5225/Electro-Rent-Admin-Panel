@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import the Get package
 import '../utils/app_constant.dart';
 import '../widgets/Custom_Drawer.dart';
 import 'All-Orders-Screen.dart';
@@ -25,98 +26,60 @@ class MainScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Button for Users
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AllUsersScreen()),
-                );
-                showSnackbar(context, 'Users');
-              },
-              icon: Icon(Icons.person, color: Colors.white),
-              label: Text(
-                'Users',
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(AppConstant.appMainColor),
-              ),
-            ),
+            buildButton(context, 'Users', Icons.person, AllUsersScreen()),
             SizedBox(height: 20),
-            // Button for Orders
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AllOrdersScreen()),
-                );
-                showSnackbar(context, 'Orders');
-              },
-              icon: Icon(Icons.shopping_bag, color: Colors.white),
-              label: Text(
-                'Orders',
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(AppConstant.appMainColor),
-              ),
-            ),
+            buildButton(context, 'Orders', Icons.shopping_bag, AllOrdersScreen()),
             SizedBox(height: 20),
-            // Button for Products
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AllProductsScreen()),
-                );
-                showSnackbar(context, 'Products');
-              },
-              icon: Icon(Icons.production_quantity_limits, color: Colors.white),
-              label: Text(
-                'Products',
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(AppConstant.appMainColor),
-              ),
-            ),
+            buildButton(context, 'Products', Icons.production_quantity_limits, AllProductsScreen()),
             SizedBox(height: 20),
-            // Button for Categories
-            ElevatedButton.icon(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => AllCategoriesScreen()),
-                // );
-                // showSnackbar(context, 'Categories');
-              },
-              icon: Icon(Icons.category, color: Colors.white),
-              label: Text(
-                'Categories',
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(AppConstant.appMainColor),
-              ),
-            ),
+            buildButton(context, 'Categories', Icons.category, null), // Modify this according to your logic
           ],
         ),
       ),
     );
   }
 
-  void showSnackbar(BuildContext context, String title) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Navigating to $title Screen...'),
-        backgroundColor: AppConstant.appMainColor,
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+  Widget buildButton(BuildContext context, String title, IconData icon, Widget? screen) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-      ),
+        SizedBox(height: 10),
+        SizedBox(
+          width: 190,
+          height: 50, // Adjust the height as needed
+          child: ElevatedButton.icon(
+            onPressed: () {
+              if (screen != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => screen),
+                );
+                Get.snackbar(
+                  "PLEASE WAIT",
+                  "Navigating to $title Screen...",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: AppConstant.appSecondaryColor,
+                  colorText: AppConstant.appTextColor,
+                  duration: Duration(seconds: 2),
+                );
+              } else {
+                // Handle logic when screen is null
+              }
+            },
+            icon: Icon(icon, color: Colors.white),
+            label: Text(
+              title,
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(AppConstant.appMainColor),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
