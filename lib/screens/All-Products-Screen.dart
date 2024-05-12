@@ -1,4 +1,5 @@
 import 'package:admin_panel/models/Product-Model.dart';
+import 'package:admin_panel/screens/Edit-Product-Screen.dart';
 import 'package:admin_panel/screens/Single-Product-Detail-Screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -137,8 +138,9 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(productModel.categoryName),
+
                       trailing: GestureDetector(
-                          onTap: () {},
+                          onTap: () => Get.to(() => EditProductScreen(productModel: productModel)),
                           child: Icon(Icons.edit_outlined)),
                     ),
                   );
