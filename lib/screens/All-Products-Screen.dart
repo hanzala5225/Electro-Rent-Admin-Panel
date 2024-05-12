@@ -137,11 +137,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(productModel.categoryName),
-                      trailing: Icon(Icons.edit),
+                      trailing: GestureDetector(
+                          onTap: () {},
+                          child: Icon(Icons.edit_outlined)),
                     ),
                   );
-
-
                 },
               );
             }

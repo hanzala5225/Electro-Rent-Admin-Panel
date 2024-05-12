@@ -1,19 +1,16 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../utils/app_constant.dart';
 
 class AddProductImagesController extends GetxController{
   final ImagePicker _picker = ImagePicker();
   RxList<XFile> SelectedImages = <XFile>[].obs;
   final RxList<String> arrImagesUrl = <String>[].obs;
-
   final FirebaseStorage storageRef = FirebaseStorage.instance;
 
   Future<void> showImagesPickerDialog() async {
@@ -30,20 +27,20 @@ class AddProductImagesController extends GetxController{
 
     if(status == PermissionStatus.granted){
       Get.defaultDialog(
-        title: "Choose Image",
-        middleText: "Do You Want To Pick Image From Camera Or Gallery??",
-        actions: [
-          ElevatedButton(
+          title: "Choose Image",
+          middleText: "Do You Want To Pick Image From Camera Or Gallery??",
+          actions: [
+            ElevatedButton(
               onPressed: (){
                 SelectImages("Camera");
               }, child: Text("Camera"),
-          ),
-          ElevatedButton(
+            ),
+            ElevatedButton(
               onPressed: (){
                 SelectImages("Gallery");
               }, child: Text("Gallery"),
-          ),
-        ]
+            ),
+          ]
       );
     }
     if(status == PermissionStatus.denied){
@@ -73,7 +70,7 @@ class AddProductImagesController extends GetxController{
       }
     }else{
       final img =
-           await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+      await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
 
       if(img != null){
         imgs.add(img);
@@ -94,25 +91,23 @@ class AddProductImagesController extends GetxController{
   }
 
   //
-   Future<void> uploadFunction(List<XFile> _images) async{
-     arrImagesUrl.clear();
-     for(int i = 0; i < _images.length; i++){
-       dynamic imageUrl = uploadFile(_images[i]);
+  Future<void> uploadFunction(List<XFile> _images) async{
+    arrImagesUrl.clear();
+    for(int i = 0; i < _images.length; i++){
+      dynamic imageUrl = await uploadFile(_images[i]);
 
-       arrImagesUrl.add(imageUrl.toString());
-     }
-     update();
-   }
+      arrImagesUrl.add(imageUrl.toString());
+    }
+    update();
+  }
 
-   //
-    Future<String> uploadFile(XFile _image) async{
+  //
+  Future<String> uploadFile(XFile _image) async{
     TaskSnapshot reference =
     await storageRef.ref()
         .child("product-images").child(_image.name + DateTime.now().toString())
         .putFile(File(_image.path));
 
     return await reference.ref.getDownloadURL();
-    }
-
+  }
 }
-

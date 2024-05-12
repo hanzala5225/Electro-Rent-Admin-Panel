@@ -1,0 +1,6 @@
+AC
+Fridge
+Juicer
+Ovens
+WashingMachine
+camera

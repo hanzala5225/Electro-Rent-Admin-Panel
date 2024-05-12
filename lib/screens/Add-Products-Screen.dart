@@ -24,20 +24,12 @@ class AddProductsScreen extends StatelessWidget {
   CategoryDropDownController categoryDropDownController =
   Get.put(CategoryDropDownController());
 
-  IsSaleController isSaleController =
-  Get.put(IsSaleController());
+  IsSaleController isSaleController = Get.put(IsSaleController());
 
-  TextEditingController productNameController =
-  Get.put(TextEditingController());
-
-  TextEditingController salePriceController =
-  Get.put(TextEditingController());
-
-  TextEditingController rentPriceController =
-  Get.put(TextEditingController());
-
-  TextEditingController productDescriptionController =
-  Get.put(TextEditingController());
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController salePriceController = TextEditingController();
+  TextEditingController rentPriceController = TextEditingController();
+  TextEditingController productDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -69,56 +61,56 @@ class AddProductsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-        
+
               // show Images
               GetBuilder<AddProductImagesController>(
                 init: AddProductImagesController(),
                 builder: (imageController) {
                   return imageController.SelectedImages.length > 0
                       ? Container(
-                          width: MediaQuery.of(context).size.width - 20,
-                          height: Get.height / 3.0,
-        
-                       child: GridView.builder(
-                         itemCount: imageController.SelectedImages.length,
-                           physics: const BouncingScrollPhysics(),
-        
-                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 10,
-                           ),
-        
-                           itemBuilder: (BuildContext context, int index) {
-                             return Stack(
-                               children: [
-                                 Image.file(
-                                   File(imageController
-                                       .SelectedImages[index].path),
-                                   fit: BoxFit.cover,
-                                   height: Get.height / 4,
-                                   width: Get.width / 2,
-                                 ),
-                                 Positioned(
-                                   right: 10,
-                                   top: 0,
-                                   child: InkWell(
-                                     onTap: (){
-                                       imageController.removeImages(index);
-                                     },
-                                     child: CircleAvatar(
-                                       backgroundColor: AppConstant.appMainColor,
-                                       child: Icon(
-                                         Icons.close,
-                                         color: AppConstant.appTextColor,
-                                       ),
-                                     ),
-                                   ),
-                                 )
-                               ],
-                             );
-                           }),
+                    width: MediaQuery.of(context).size.width - 20,
+                    height: Get.height / 3.0,
+
+                    child: GridView.builder(
+                        itemCount: imageController.SelectedImages.length,
+                        physics: const BouncingScrollPhysics(),
+
+                        gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 10,
+                        ),
+
+                        itemBuilder: (BuildContext context, int index) {
+                          return Stack(
+                            children: [
+                              Image.file(
+                                File(imageController
+                                    .SelectedImages[index].path),
+                                fit: BoxFit.cover,
+                                height: Get.height / 4,
+                                width: Get.width / 2,
+                              ),
+                              Positioned(
+                                right: 10,
+                                top: 0,
+                                child: InkWell(
+                                  onTap: (){
+                                    imageController.removeImages(index);
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: AppConstant.appMainColor,
+                                    child: Icon(
+                                      Icons.close,
+                                      color: AppConstant.appTextColor,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        }),
                   )
                       : SizedBox.shrink();
                 },
@@ -129,32 +121,32 @@ class AddProductsScreen extends StatelessWidget {
 
               //IS SALE METHOD CALLED HERE
               GetBuilder<IsSaleController>(
-                init: IsSaleController(),
+                  init: IsSaleController(),
                   builder: (isSaleController){
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card(
-                      elevation: 10,
-                      child: Padding(
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
                           padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(" Product On Sale ",
-                            style: TextStyle(fontSize: 17),),
-                            Switch(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(" Product On Sale ",
+                                style: TextStyle(fontSize: 17),),
+                              Switch(
                                 value: isSaleController.isSale.value,
                                 activeColor: AppConstant.appMainColor,
                                 onChanged: (value){
                                   isSaleController.toggleIsSale(value);
                                 },
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
               ),
 
               //FORM FIELD
@@ -203,7 +195,7 @@ class AddProductsScreen extends StatelessWidget {
                     ),
                   ),
                 ): SizedBox.shrink();
-               },
+              },
               ),
 
               SizedBox(
@@ -250,12 +242,9 @@ class AddProductsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               ElevatedButton(
                 onPressed: () async {
-
-                  //print(productId);
-
                   try{
                     EasyLoading.show();
                     await addProductImagesController
@@ -265,18 +254,18 @@ class AddProductsScreen extends StatelessWidget {
                     String productId = await GenerateIds().generateProductId();
 
                     ProductModel productModel = ProductModel(
-                        productId: productId,
-                        categoryId: categoryDropDownController.selectedCategoryId.toString(),
-                        productName: productNameController.text.trim(),
-                        categoryName: categoryDropDownController.selectedCategoryName.toString(),
-                        salePrice: salePriceController.text!= "" ? salePriceController.text.trim() : "",
-                        rentPrice: rentPriceController.text.trim(),
-                        deliveryTime: "",
-                        isSale: isSaleController.isSale.value,
-                        productImages: addProductImagesController.arrImagesUrl,
-                        productDescription: productDescriptionController.text.trim(),
-                        createdAt: DateTime.now(),
-                        updatedAt: DateTime.now(),
+                      productId: productId,
+                      categoryId: categoryDropDownController.selectedCategoryId.toString(),
+                      productName: productNameController.text.trim(),
+                      categoryName: categoryDropDownController.selectedCategoryName.toString(),
+                      salePrice: salePriceController.text!= "" ? salePriceController.text.trim() : "",
+                      rentPrice: rentPriceController.text.trim(),
+                      deliveryTime: "",
+                      isSale: isSaleController.isSale.value,
+                      productImages: addProductImagesController.arrImagesUrl,
+                      productDescription: productDescriptionController.text.trim(),
+                      createdAt: DateTime.now(),
+                      updatedAt: DateTime.now(),
                     );
 
                     await FirebaseFirestore.instance
