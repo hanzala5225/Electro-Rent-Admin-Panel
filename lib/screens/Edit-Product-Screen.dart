@@ -13,31 +13,41 @@ import '../controllers/Category-Dropdown-Controller.dart';
 import '../controllers/Is-Sale-Controller.dart';
 import '../utils/app_constant.dart';
 
-class EditProductScreen extends StatelessWidget {
+class EditProductScreen extends StatefulWidget {
   ProductModel productModel;
   EditProductScreen({
     super.key,
     required this.productModel
   });
 
+  @override
+  State<EditProductScreen> createState() => _EditProductScreenState();
+}
+
+class _EditProductScreenState extends State<EditProductScreen> {
   IsSaleController isSaleController = Get.put(IsSaleController());
+
   CategoryDropDownController categoryDropDownController =
   Get.put(CategoryDropDownController());
+
   TextEditingController productNameController = TextEditingController();
+
   TextEditingController salePriceController = TextEditingController();
+
   TextEditingController rentPriceController = TextEditingController();
+
   TextEditingController productDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EditProductController>(
-      init: EditProductController(productModel: productModel),
+      init: EditProductController(productModel: widget.productModel),
         builder: (controller) {
         return Scaffold(
           appBar: AppBar(
             iconTheme: const IconThemeData(color: AppConstant.appTextColor),
             backgroundColor: AppConstant.appMainColor,
-            title: Text("Edit:  ${productModel.productName}",
+            title: Text("Edit:  ${widget.productModel.productName}",
               style: const TextStyle(color: AppConstant.appTextColor),
             ),
           ),
@@ -82,7 +92,7 @@ class EditProductScreen extends StatelessWidget {
                                         controller.images[index].toString(),
                                       );
                                       await controller.deleteImagesFromFireStore(
-                                          controller.images[index].toString(), productModel.productId);
+                                          controller.images[index].toString(), widget.productModel.productId);
                                       EasyLoading.dismiss();
                                     },
                                     child: CircleAvatar(
@@ -186,7 +196,7 @@ class EditProductScreen extends StatelessWidget {
                     child: TextFormField(
                       cursorColor: AppConstant.appMainColor,
                       textInputAction: TextInputAction.next,
-                      controller: productNameController..text = productModel.productName,
+                      controller: productNameController..text = widget.productModel.productName,
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         hintText: "Product Name: ",
@@ -210,7 +220,7 @@ class EditProductScreen extends StatelessWidget {
                       child: TextFormField(
                         cursorColor: AppConstant.appMainColor,
                         textInputAction: TextInputAction.next,
-                        controller: salePriceController..text = productModel.salePrice,
+                        controller: salePriceController..text = widget.productModel.salePrice,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                           hintText: "Sale Price: ",
@@ -235,7 +245,7 @@ class EditProductScreen extends StatelessWidget {
                     child: TextFormField(
                       cursorColor: AppConstant.appMainColor,
                       textInputAction: TextInputAction.next,
-                      controller: rentPriceController..text = productModel.rentPrice,
+                      controller: rentPriceController..text = widget.productModel.rentPrice,
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         hintText: "Rent Price: ",
@@ -257,7 +267,7 @@ class EditProductScreen extends StatelessWidget {
                     child: TextFormField(
                       cursorColor: AppConstant.appMainColor,
                       textInputAction: TextInputAction.next,
-                      controller: productDescriptionController..text = productModel.productDescription,
+                      controller: productDescriptionController..text = widget.productModel.productDescription,
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
                         hintText: "Product Description: ",
@@ -271,33 +281,43 @@ class EditProductScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: () async{
-                        EasyLoading.show();
-                        ProductModel newProductModel = ProductModel(
-                            productId: productModel.productId,
-                            categoryId: categoryDropDownController.selectedCategoryId.toString(),
-                            productName: productNameController.text.trim(),
-                            categoryName: categoryDropDownController.selectedCategoryName.toString(),
-                            salePrice: salePriceController.text != ""
-                                ? salePriceController.text.trim()
-                                : "",
-                            rentPrice: rentPriceController.text.trim(),
-                            deliveryTime: "",
-                            isSale: isSaleController.isSale.value,
-                            productImages: productModel.productImages,
-                            productDescription: productDescriptionController.text.trim(),
-                            createdAt: productModel.createdAt,
-                            updatedAt: DateTime.now(),
-                        );
+                    onPressed: () async {
+                      EasyLoading.show(
+                        status: 'Updating Product...',
+                        indicator: CircularProgressIndicator(
+                          color: AppConstant.appMainColor,
+                        ),
+                      );
+                      ProductModel newProductModel = ProductModel(
+                        productId: widget.productModel.productId,
+                        categoryId: categoryDropDownController.selectedCategoryId.toString(),
+                        productName: productNameController.text.trim(),
+                        categoryName: categoryDropDownController.selectedCategoryName.toString(),
+                        salePrice: salePriceController.text.isNotEmpty
+                            ? salePriceController.text.trim()
+                            : "",
+                        rentPrice: rentPriceController.text.trim(),
+                        deliveryTime: "",
+                        isSale: isSaleController.isSale.value,
+                        productImages: widget.productModel.productImages,
+                        productDescription: productDescriptionController.text.trim(),
+                        createdAt: widget.productModel.createdAt,
+                        updatedAt: DateTime.now(),
+                      );
 
-                        await FirebaseFirestore.instance
-                            .collection('products')
-                            .doc(productModel.productId)
-                            .update(newProductModel.toMap());
+                      await FirebaseFirestore.instance
+                          .collection('products')
+                          .doc(widget.productModel.productId)
+                          .update(newProductModel.toMap());
 
-                        EasyLoading.dismiss();
-                      },
-                      child: Text("Update"))
+                      EasyLoading.dismiss();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: AppConstant.appTextColor, backgroundColor: AppConstant.appMainColor,
+                    ),
+                    child: Text("Update"),
+                  )
+
                 ],
               ),
             ),
