@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:admin_panel/controllers/Edit-Product-Controller.dart';
 import 'package:admin_panel/models/Product-Model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -18,6 +19,14 @@ class EditProductScreen extends StatelessWidget {
     super.key,
     required this.productModel
   });
+
+  IsSaleController isSaleController = Get.put(IsSaleController());
+  CategoryDropDownController categoryDropDownController =
+  Get.put(CategoryDropDownController());
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController salePriceController = TextEditingController();
+  TextEditingController rentPriceController = TextEditingController();
+  TextEditingController productDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +150,6 @@ class EditProductScreen extends StatelessWidget {
               );
             },
           ),
-
                   GetBuilder<IsSaleController>(
                       init: IsSaleController(),
                       builder: (isSaleController) {
@@ -171,7 +179,125 @@ class EditProductScreen extends StatelessWidget {
                           ),
                         );
                       }),
+                  //FORM FIELD
+                  Container(
+                    height: 65,
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      cursorColor: AppConstant.appMainColor,
+                      textInputAction: TextInputAction.next,
+                      controller: productNameController..text = productModel.productName,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                        hintText: "Product Name: ",
+                        hintStyle: TextStyle(fontSize: 12.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Obx(() {
+                    return isSaleController.isSale.value
+                        ? Container(
+                      height: 65,
+                      margin: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: TextFormField(
+                        cursorColor: AppConstant.appMainColor,
+                        textInputAction: TextInputAction.next,
+                        controller: salePriceController..text = productModel.salePrice,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                          hintText: "Sale Price: ",
+                          hintStyle: TextStyle(fontSize: 12.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                        : SizedBox.shrink();
+                  }),
 
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    height: 65,
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      cursorColor: AppConstant.appMainColor,
+                      textInputAction: TextInputAction.next,
+                      controller: rentPriceController..text = productModel.rentPrice,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                        hintText: "Rent Price: ",
+                        hintStyle: TextStyle(fontSize: 12.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    height: 65,
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: TextFormField(
+                      cursorColor: AppConstant.appMainColor,
+                      textInputAction: TextInputAction.next,
+                      controller: productDescriptionController..text = productModel.productDescription,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                        hintText: "Product Description: ",
+                        hintStyle: TextStyle(fontSize: 12.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                      onPressed: () async{
+                        EasyLoading.show();
+                        ProductModel newProductModel = ProductModel(
+                            productId: productModel.productId,
+                            categoryId: categoryDropDownController.selectedCategoryId.toString(),
+                            productName: productNameController.text.trim(),
+                            categoryName: categoryDropDownController.selectedCategoryName.toString(),
+                            salePrice: salePriceController.text != ""
+                                ? salePriceController.text.trim()
+                                : "",
+                            rentPrice: rentPriceController.text.trim(),
+                            deliveryTime: "",
+                            isSale: isSaleController.isSale.value,
+                            productImages: productModel.productImages,
+                            productDescription: productDescriptionController.text.trim(),
+                            createdAt: productModel.createdAt,
+                            updatedAt: DateTime.now(),
+                        );
+
+                        await FirebaseFirestore.instance
+                            .collection('products')
+                            .doc(productModel.productId)
+                            .update(newProductModel.toMap());
+
+                        EasyLoading.dismiss();
+                      },
+                      child: Text("Update"))
                 ],
               ),
             ),

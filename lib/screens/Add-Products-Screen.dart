@@ -36,25 +36,16 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
   IsSaleController isSaleController = Get.put(IsSaleController());
 
   TextEditingController productNameController = TextEditingController();
-
   TextEditingController salePriceController = TextEditingController();
-
   TextEditingController rentPriceController = TextEditingController();
-
   TextEditingController productDescriptionController = TextEditingController();
 
   bool isLoaded = false;
-
   bool detection = false;
-
   String modelStatus = 'Model is not loaded right now';
-
   String modelResult = '';
-
   TextEditingController detectedObject = TextEditingController();
-
   XFile? selectedPhoto;
-
   late FlutterVision vision;
 
   void initState() {
