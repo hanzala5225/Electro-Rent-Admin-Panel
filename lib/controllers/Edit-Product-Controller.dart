@@ -34,13 +34,32 @@ class EditProductController extends GetxController{
     });
   }
 
-  Future DeleteImagesFromStorage(String imageUrl) async{
+  Future deleteImagesFromStorage(String imageUrl) async{
     final FirebaseStorage storage = FirebaseStorage.instance;
     try{
       Reference reference = storage.refFromURL(imageUrl);
       await reference.delete();
     } catch(e){
+      Get.snackbar(
+          "Error",
+          "$e",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppConstant.appSecondaryColor,
+          colorText: AppConstant.appTextColor
+      );
+    }
+  }
 
+  Future<void> deleteImagesFromFireStore(String imageUrl, String productId) async{
+    try{
+      await FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .update({
+             'productImages': FieldValue.arrayRemove([imageUrl])
+          });
+      update();
+    }catch(e){
       Get.snackbar(
           "Error",
           "$e",
