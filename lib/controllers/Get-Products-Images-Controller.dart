@@ -44,7 +44,6 @@ class AddProductImagesController extends GetxController{
               },
               child: Text("Gallery"),
             ),
-
           ]
       );
     }
@@ -57,7 +56,6 @@ class AddProductImagesController extends GetxController{
       openAppSettings();
     }
   }
-
   Future<void> SelectImages(String type) async {
     List<XFile> imgs = [];
     if(type == "Gallery"){
@@ -82,7 +80,6 @@ class AddProductImagesController extends GetxController{
         update();
       }
     }
-
     if(imgs.isNotEmpty){
       SelectedImages.addAll(imgs);
       update();
@@ -90,14 +87,10 @@ class AddProductImagesController extends GetxController{
       showUploadSuccessDialog();
     }
   }
-
-
-
   void removeImages(int index){
     SelectedImages.removeAt(index);
     update();
   }
-
   //
   Future<void> uploadFunction(List<XFile> _images) async{
     arrImagesUrl.clear();
@@ -108,7 +101,6 @@ class AddProductImagesController extends GetxController{
     }
     update();
   }
-
   void showUploadSuccessDialog() {
     Get.dialog(
       AlertDialog(
@@ -125,7 +117,6 @@ class AddProductImagesController extends GetxController{
       ),
     );
   }
-
   //
   Future<String> uploadFile(XFile _image) async{
     TaskSnapshot reference =

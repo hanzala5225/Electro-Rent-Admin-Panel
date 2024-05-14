@@ -3,9 +3,12 @@ import 'package:admin_panel/screens/Edit-Product-Screen.dart';
 import 'package:admin_panel/screens/Single-Product-Detail-Screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -47,11 +50,12 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             )
         ],
       ),
-      body: FutureBuilder(
-          future: FirebaseFirestore.instance
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
               .collection("products")
               .orderBy("createdAt", descending: true)
-              .get(),
+              .snapshots(),
+
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if(snapshot.hasError){
               return Container(
@@ -97,64 +101,99 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       updatedAt: data['updatedAt'],
                   );
 
-                  return Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ListTile(
-                      onTap: () => Get.to(
-                              () => SingleProductDetailScreen(productModel: productModel)),
-                      leading: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppConstant.appSecondaryColor,
-                            width: 3,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppConstant.appSecondaryColor.withOpacity(0.5),
-                              blurRadius: 5,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
+                  return
+                    SwipeActionCell(
+                      key: ObjectKey(productModel.productId), /// this key is necessary
+                      trailingActions: <SwipeAction>[
+                        SwipeAction(
+                            title: "delete",
+                            onTap: (CompletionHandler handler) async {
+                              await Get.defaultDialog(
+                                title: "Delete Product",
+                                content: Text("Are You Sure You Want To Delete This Product??"),
+                                textCancel: "Cancel",
+                                textConfirm: "Delete",
+                                contentPadding: EdgeInsets.all(10.0),
+                                confirmTextColor: Colors.white,
+                                onCancel: () {},
+                                onConfirm: () async {
+                                  Get.back();
+                                  EasyLoading.show(status: "Please Wait....");
 
-
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage: CachedNetworkImageProvider(
-                            productModel.productImages[0],
-                            errorListener: (err) {
-                              print("Error Loading Image");
-                              Icon(Icons.error);
+                                  await deleteImagesFromFirebase(
+                                    productModel.productImages,
+                                  );
+                                  await FirebaseFirestore.instance
+                                      .collection('products')
+                                      .doc(productModel.productId)
+                                      .delete();
+                                  EasyLoading.dismiss();
+                                },
+                                buttonColor: Colors.blue,
+                                cancelTextColor: Colors.black,
+                              );
                             },
+                            color: Colors.blue),
+                      ],
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          onTap: () => Get.to(
+                                  () => SingleProductDetailScreen(productModel: productModel)),
+                          leading: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppConstant.appSecondaryColor,
+                                width: 3,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppConstant.appSecondaryColor.withOpacity(0.5),
+                                  blurRadius: 5,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+
+
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: CachedNetworkImageProvider(
+                                productModel.productImages[0],
+                                errorListener: (err) {
+                                  print("Error Loading Image");
+                                  Icon(Icons.error);
+                                },
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            productModel.productName,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(productModel.categoryName),
+
+                          trailing: GestureDetector(
+                            onTap: () {
+                              final editProductCategory = Get.put(CategoryDropDownController());
+                              final isSaleController = Get.put(IsSaleController());
+
+                              editProductCategory.setOldValues(productModel.categoryId);
+                              isSaleController.setIsSaleOldProduct(productModel.isSale);
+
+                              Get.to(() => EditProductScreen(productModel: productModel));
+                            },
+                            child: Icon(Icons.edit_outlined),
                           ),
                         ),
                       ),
-                      title: Text(
-                        productModel.productName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(productModel.categoryName),
-
-                      trailing: GestureDetector(
-                          onTap: () {
-                            final editProductCategory = Get.put(CategoryDropDownController());
-                            final isSaleController = Get.put(IsSaleController());
-
-                            editProductCategory.setOldValues(productModel.categoryId);
-                            isSaleController.setIsSaleOldProduct(productModel.isSale);
-
-                             Get.to(() => EditProductScreen(productModel: productModel));
-                           },
-                             child: Icon(Icons.edit_outlined),
-                      ),
-                    ),
-                  );
+                    );
                 },
               );
             }
@@ -162,6 +201,26 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
           }
       ),
     );
+  }
+
+  Future deleteImagesFromFirebase(List imagesUrls) async{
+    final FirebaseStorage storage = FirebaseStorage.instance;
+
+    for (String imageUrl in imagesUrls){
+      try{
+        Reference reference = storage.refFromURL(imageUrl);
+
+        await reference.delete();
+      }catch(e){
+        Get.snackbar(
+            "Error",
+            "$e",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: AppConstant.appSecondaryColor,
+            colorText: AppConstant.appTextColor
+        );
+      }
+    }
   }
 }
 
