@@ -1,3 +1,4 @@
+import 'package:admin_panel/screens/All-Categories-Screen.dart';
 import 'package:admin_panel/screens/All-Products-Screen.dart';
 import 'package:admin_panel/screens/main_screen.dart';
 import 'package:admin_panel/utils/app_constant.dart';
@@ -188,7 +189,7 @@ class DrawerWidget extends StatefulWidget {
                           Get.back();
                           EasyLoading.show(status: "Please Wait..");
                           //Get.offAll(() => MainScreen());
-
+                          Get.to(()=> AllCategoriesScreen());
                           //await sendMessage();
                           EasyLoading.dismiss();
                         },
