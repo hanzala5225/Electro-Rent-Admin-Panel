@@ -1,3 +1,4 @@
+import 'package:admin_panel/screens/All-Categories-Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Import the Get package
 import '../utils/app_constant.dart';
@@ -32,7 +33,7 @@ class MainScreen extends StatelessWidget {
             SizedBox(height: 20),
             buildButton(context, 'Products', Icons.production_quantity_limits, AllProductsScreen()),
             SizedBox(height: 20),
-            buildButton(context, 'Categories', Icons.category, null), // Modify this according to your logic
+            buildButton(context, 'Categories', Icons.category, AllCategoriesScreen()),
           ],
         ),
       ),
@@ -46,6 +47,7 @@ class MainScreen extends StatelessWidget {
           title,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
+
         SizedBox(height: 10),
         SizedBox(
           width: 190,

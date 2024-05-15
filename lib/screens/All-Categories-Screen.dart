@@ -1,4 +1,5 @@
 import 'package:admin_panel/models/Categories-Model.dart';
+import 'package:admin_panel/screens/Add-Categories-Screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,15 @@ class AllCategoriesScreen extends StatelessWidget {
           "All Categories",
           style: TextStyle(color: AppConstant.appTextColor),
         ),
+        actions: [
+          GestureDetector(
+            onTap: ()=> Get.to(() => AddCategoriesScreen()),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Icon(Icons.add_rounded),
+            ),
+          ),
+        ],
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance

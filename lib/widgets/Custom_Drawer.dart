@@ -185,14 +185,10 @@ class DrawerWidget extends StatefulWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: 20.0),
                       child: ListTile(
-                        onTap: () async {
-                          Get.back();
-                          EasyLoading.show(status: "Please Wait..");
-                          //Get.offAll(() => MainScreen());
-                          Get.to(()=> AllCategoriesScreen());
-                          //await sendMessage();
-                          EasyLoading.dismiss();
-                        },
+                              onTap: (){
+                              Get.back();
+                              Get.to(() => AllCategoriesScreen());
+                              },
                         title: Text(
                           "Categories",
                           style: TextStyle(color: AppConstant.appTextColor),
