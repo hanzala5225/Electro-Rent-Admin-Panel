@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../utils/app_constant.dart';
 
-class AddProductImagesController extends GetxController{
+class AddProductImagesController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   RxList<XFile> SelectedImages = <XFile>[].obs;
   final RxList<String> arrImagesUrl = <String>[].obs;
@@ -18,89 +18,122 @@ class AddProductImagesController extends GetxController{
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
 
-    if(androidDeviceInfo.version.sdkInt <= 32){
+    if (androidDeviceInfo.version.sdkInt <= 32) {
       status = await Permission.storage.request();
-    }
-    else{
+    } else {
       status = await Permission.mediaLibrary.request();
     }
 
-    if(status == PermissionStatus.granted){
+    if (status == PermissionStatus.granted) {
       Get.defaultDialog(
-          title: "Choose Image",
-          middleText: "Do You Want To Pick Image From Camera Or Gallery??",
-          actions: [
-            ElevatedButton(
-              onPressed: () async {
-                await SelectImages("Camera");
-                Get.back(); // Close dialog after image selection
-              },
-              child: Text("Camera"),
+        title: "Choose Image",
+        content: Column(
+          children: [
+            Text(
+              "Do You Want To Pick Image From Camera Or Gallery?",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await SelectImages("Gallery");
-                Get.back(); // Close dialog after image selection
-              },
-              child: Text("Gallery"),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await SelectImages("Camera");
+                    Get.back(); // Close dialog after image selection
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppConstant.appMainColor,
+                  ),
+                  child: Text(
+                    "Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await SelectImages("Gallery");
+                    Get.back(); // Close dialog after image selection
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppConstant.appMainColor,
+                  ),
+                  child: Text(
+                    "Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ]
+          ],
+        ),
       );
     }
-    if(status == PermissionStatus.denied){
-      print("Error... Please Allow Permissions For Further Usage");
-      openAppSettings();
-    }
-    if(status == PermissionStatus.permanentlyDenied){
+    if (status == PermissionStatus.denied ||
+        status == PermissionStatus.permanentlyDenied) {
       print("Error... Please Allow Permissions For Further Usage");
       openAppSettings();
     }
   }
+
   Future<void> SelectImages(String type) async {
     List<XFile> imgs = [];
-    if(type == "Gallery"){
-      try{
+    if (type == "Gallery") {
+      try {
         imgs = await _picker.pickMultiImage(imageQuality: 85);
         update();
-      }catch(e){
+      } catch (e) {
         Get.snackbar(
-            "Error",
-            "$e",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: AppConstant.appSecondaryColor,
-            colorText: AppConstant.appTextColor
+          "Error",
+          "$e",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppConstant.appSecondaryColor,
+          colorText: AppConstant.appTextColor,
         );
       }
-    }else{
-      final img =
-      await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+    } else {
+      final img = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 85,
+      );
 
-      if(img != null){
+      if (img != null) {
         imgs.add(img);
         update();
       }
     }
-    if(imgs.isNotEmpty){
+    if (imgs.isNotEmpty) {
       SelectedImages.addAll(imgs);
       update();
       print(SelectedImages.length);
       showUploadSuccessDialog();
     }
   }
-  void removeImages(int index){
+
+  void removeImages(int index) {
     SelectedImages.removeAt(index);
     update();
   }
-  //
-  Future<void> uploadFunction(List<XFile> _images) async{
+
+  Future<void> uploadFunction(List<XFile> _images) async {
     arrImagesUrl.clear();
-    for(int i = 0; i < _images.length; i++){
+    for (int i = 0; i < _images.length; i++) {
       dynamic imageUrl = await uploadFile(_images[i]);
 
       arrImagesUrl.add(imageUrl.toString());
     }
     update();
   }
+
   void showUploadSuccessDialog() {
     Get.dialog(
       AlertDialog(
@@ -117,11 +150,12 @@ class AddProductImagesController extends GetxController{
       ),
     );
   }
-  //
-  Future<String> uploadFile(XFile _image) async{
-    TaskSnapshot reference =
-    await storageRef.ref()
-        .child("product-images").child(_image.name + DateTime.now().toString())
+
+  Future<String> uploadFile(XFile _image) async {
+    TaskSnapshot reference = await storageRef
+        .ref()
+        .child("product-images")
+        .child(_image.name + DateTime.now().toString())
         .putFile(File(_image.path));
 
     return await reference.ref.getDownloadURL();

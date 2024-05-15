@@ -60,6 +60,7 @@ dependencies:
   pytorch_lite: 2.0.5
   flutter_vision: ^1.1.4
   image: 4.1.7
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:
