@@ -19,7 +19,6 @@ class AddCategoriesScreen extends StatefulWidget {
   @override
   State<AddCategoriesScreen> createState() => _AddCategoriesScreenState();
 }
-
 class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
   TextEditingController categoryNameController = TextEditingController();
   AddCategoriesImagesController addCategoriesImagesController =
@@ -56,8 +55,8 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                 ],
               ),
             ),
-            GetBuilder<AddProductImagesController>(
-              init: AddProductImagesController(),
+            GetBuilder<AddCategoriesImagesController>(
+              init: AddCategoriesImagesController(),
               builder: (imageController) {
                 return imageController.SelectedImages.length > 0
                     ? Container(

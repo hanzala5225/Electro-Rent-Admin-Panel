@@ -485,6 +485,7 @@ class _AddProductsScreenState extends State<AddProductsScreen> {
                     child: Text(
                       'OK',
                       style: TextStyle(
+                        color: AppConstant.appTextColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
